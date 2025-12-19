@@ -1,6 +1,6 @@
 id: semnet-kopia
 name: Kopia Backup
-tagline: Fast, verschlüsseltes Backup mit Web-UI
+tagline: Schnelles, verschlüsseltes Backup mit Web-UI
 icon: https://raw.githubusercontent.com/kopia/kopia/master/site/static/images/logo.png
 version: "0.1.1"
 category: Files
