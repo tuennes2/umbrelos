@@ -7,7 +7,7 @@ services:
       APP_PORT: 51515
 
   server:
-    image: kopia/kopia:latest
+    image: ghcr.io/kopia/kopia:latest
     container_name: semnet-kopia_server
     restart: unless-stopped
     environment:
