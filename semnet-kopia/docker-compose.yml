@@ -1,58 +1,26 @@
-
 version: "3.7"
 
 services:
-  # Integration in Umbrels Reverse Proxy
-  app_proxy:
-    environment:
-      # <app-id>_<web-service-name>_1
-      # Der Suffix "_1" ist erforderlich.
-      APP_HOST: kopia_web_1
-      APP_PORT: 51515
-
-  web:
-    image: ghcr.io/kopia/kopia:latest
-    # Für reproduzierbare Builds kannst du zusätzlich einen Digest pinnen:
-    # image: ghcr.io/kopia/kopia:latest@sha256:<multi-arch-digest>
+  kopia:
+    image: kopia/kopia:0.17.0
+    container_name: umbrel-kopia
     restart: unless-stopped
-    stop_grace_period: 1m
-    user: "1000:1000"
-    environment:
-      TZ: Europe/Berlin
-      # Login für die Kopia Web-UI: wir verwenden Umbrels App-Passwort
-      KOPIA_SERVER_USERNAME: "admin"
-      KOPIA_SERVER_PASSWORD: "${APP_PASSWORD}"
 
-      # Optional: Setze eine Repo-Passphrase, wenn du ein neues Repo erstellst.
-      # Entferne die nächste Zeile, wenn du ohne Passphrase arbeiten willst.
-      KOPIA_PASSWORD: "${APP_PASSWORD}"
+    command: |
+      server start \
+      --insecure \
+      --address=0.0.0.0:51515 \
+      --server-control-username=umbrel \
+      --server-control-password=umbrel
 
-      # (Optional) Server-Log-Level
-      # KOPIA_LOG_LEVEL: info
+    ports:
+      - "51515:51515"
+
     volumes:
-      # Persistenz ausschließlich im App-Datenordner von Umbrel
       - ${APP_DATA_DIR}/config:/app/config
       - ${APP_DATA_DIR}/cache:/app/cache
-      - ${APP_DATA_DIR}/repository:/app/repository
-      # Beispiel-Datenquelle: gemeinsamer Downloads-Ordner von Umbrel (read-only)
-      # Kommentiere die nächste Zeile ein, wenn du ihn sichern willst:
-      # - ${APP_DOWNLOADS_DIR}:/data/downloads:ro
-    command:
-      [
-        "server", "start",
-        "--address=0.0.0.0:51515",
-        "--server-username=${KOPIA_SERVER_USERNAME}",
-        "--server-password=${KOPIA_SERVER_PASSWORD}",
-        "--insecure",
-        "--disable-csrf",
-        "--log-level=info"
-      ]
-    # Keine Port-Publikation nötig – Umbrels app_proxy übernimmt das Routing
-    # ports:
-    #   - "51515:51515"
+      - ${UMBREL_ROOT}/data:/data:ro
 
-    healthcheck:
-      test: ["CMD", "kopia", "server", "status", "--address=http://127.0.0.1:51515"]
-      interval: 30s
-      timeout: 5s
-      retries: 10
+    environment:
+      - KOPIA_CONFIG_PATH=/app/config/repository.config
+      - KOPIA_CACHE_DIRECTORY=/app/cache
