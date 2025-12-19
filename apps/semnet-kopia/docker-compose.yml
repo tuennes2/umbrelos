@@ -3,12 +3,12 @@ services:
     image: getumbrel/umbrel-app-proxy:1.0.0
     restart: unless-stopped
     environment:
-      APP_HOST: home-kopia_server_1
+      APP_HOST: semnet-kopia_server_1
       APP_PORT: 51515
 
   server:
     image: kopia/kopia:latest
-    container_name: home-kopia_server
+    container_name: semnet-kopia_server
     restart: unless-stopped
     environment:
       # Unbedingt vor Produktivbetrieb ändern
