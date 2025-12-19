@@ -2,7 +2,7 @@ id: semnet-kopia
 name: Kopia Backup
 tagline: Fast, verschlüsseltes Backup mit Web-UI
 icon: https://raw.githubusercontent.com/kopia/kopia/master/site/static/images/logo.png
-version: "0.1.0"
+version: "0.1.1"
 category: Files
 description: >
   Kopia ist ein schnelles, inkrementelles und verschlüsseltes Backup-Tool
@@ -13,12 +13,16 @@ developer: Kopia Community
 website: https://kopia.io
 support: https://kopia.discourse.group
 repo: https://github.com/kopia/kopia
+
 port: 51515
 path: /
 tor: false
+
+# Wichtig: nur existierende Permissions
 permissions:
-  - docker
   - storage
+  - docker
+
 releaseNotes: >
-  Erste inoffizielle Community-App für Kopia. Bitte nur von erfahrenen
-  Nutzern verwenden und Konfiguration vor Produktivbetrieb testen.
+  Erste inoffizielle Community-App für Kopia, getestet mit umbrelOS 1.5.
+  Bitte Konfiguration und Backups vor Produktivbetrieb gründlich testen.

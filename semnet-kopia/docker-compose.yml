@@ -1,5 +1,7 @@
 services:
   app_proxy:
+    image: getumbrel/umbrel-app-proxy:1.0.0
+    restart: unless-stopped
     environment:
       APP_HOST: home-kopia_server_1
       APP_PORT: 51515
@@ -9,24 +11,18 @@ services:
     container_name: home-kopia_server
     restart: unless-stopped
     environment:
-      # Setze hier ein starkes Admin-Passwort
-      KOPIA_PASSWORD: "welcome1"
+      # Unbedingt vor Produktivbetrieb ändern
+      KOPIA_PASSWORD: "welcome!"
+    command: >
+      server start
+      --address=0.0.0.0:51515
+      --config-file=/app/config/repository.config
+      --log-dir=/app/logs
     volumes:
-      # Kopia-Konfiguration/Cache/Logs (persistente Daten der App)
+      # Persistente Kopia-Daten
       - ${APP_DATA_DIR}/config:/app/config
       - ${APP_DATA_DIR}/cache:/app/cache
       - ${APP_DATA_DIR}/logs:/app/logs
 
-      # Beispiel: gesamte Umbrel-App-Datenstruktur als Quelle für Backups
-      # (Du kannst hier weitere Pfade ergänzen oder einschränken)
+      # Beispiel: Umbrel-App-Daten als Backup-Quelle
       - /home/umbrel/umbrel/app-data:/data:ro
-
-    # Kein direkter Host-Port, Zugriff geht über app_proxy / Umbrel-Reverse-Proxy
-    networks:
-      default:
-        aliases:
-          - home-kopia
-
-networks:
-  default:
-    driver: bridge
